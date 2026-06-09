@@ -855,18 +855,28 @@ uint8_t timer(uint16_t step)
 // Green = good, orange = medium, red = low.
 void showBatteryLevel()
 {
-  analogReference(INTERNAL1V1);
-  delay(2); // let reference settle
-  int raw = analogRead(ADC_VDDDIV10);
-  analogReference(VDD);
+  // ATtiny814 is 0/1-series: no VDDDIV10. Instead measure the internal
+  // 1.1V bandgap with VCC as the ADC reference. VCC = 1126400L / raw (mV).
+  ADC0.MUXPOS = ADC_MUXPOS_INTREF_gc;
+  VREF.CTRLA  = VREF_ADC0REFSEL_1V1_gc;
+  ADC0.CTRLA  = ADC_ENABLE_bm;
+  ADC0.CTRLB  = 0; // single sample
+  delay(2);
+  ADC0.COMMAND = ADC_STCONV_bm;
+  while (!(ADC0.INTFLAGS & ADC_RESRDY_bm));
+  int raw = ADC0.RES;
+  ADC0.INTFLAGS = ADC_RESRDY_bm;
+  // restore ADC for touch library
+  ADC0.CTRLA &= ~ADC_ENABLE_bm;
 
-  // raw = (VCC/10) / 1.1V * 1024
-  // At 6.0V: raw ~= 558, at 4.0V: raw ~= 372
-  // Map 372-558 to 1-9 LEDs
+  // VCC in mV = 1126400 / raw  (1.1V * 1024 * 1000)
+  // At 6000mV: raw ~= 188, at 4000mV: raw ~= 281
+  // Map: more LEDs = higher voltage. Clamp to 1-9.
+  uint16_t vcc_mv = (uint16_t)(1126400L / raw);
   uint8_t leds;
-  if (raw >= 558) leds = 9;
-  else if (raw <= 372) leds = 1;
-  else leds = (uint8_t)(((uint32_t)(raw - 372) * 8) / 186) + 1;
+  if (vcc_mv >= 6000) leds = 9;
+  else if (vcc_mv <= 4000) leds = 1;
+  else leds = (uint8_t)(((uint32_t)(vcc_mv - 4000) * 8) / 2000) + 1;
 
   // colour: green >= 7, orange >= 4, red < 4
   uint8_t batR, batG;
