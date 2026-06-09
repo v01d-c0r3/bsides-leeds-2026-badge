@@ -849,6 +849,185 @@ uint8_t timer(uint16_t step)
 }
 
 
+// ---- Boot animation ----
+
+// Stage 1: corrupt scatter — raw noise across all LEDs
+void bootScatter(uint16_t durationMs)
+{
+  uint16_t elapsed = 0;
+  while (elapsed < durationMs) {
+    for (uint8_t i = 0; i < NUM_LEDS; ++i) {
+      if ((nextRandomByte() & 0x03) == 0) {
+        uint8_t b = nextRandomByte() & 0x0F;
+        // bias toward cyan/purple — v01d palette bleeding through noise
+        uint8_t which = nextRandomByte() & 0x03;
+        if (which == 0)      ledStrip.setPixelColor(i, 0, b, b * 2);
+        else if (which == 1) ledStrip.setPixelColor(i, b, 0, b * 2);
+        else                 ledStrip.setPixelColor(i, 0, 0, 0);
+      }
+    }
+    ledStrip.show();
+    delay(35);
+    elapsed += 35;
+  }
+  setAllLeds(COLOR_OFF, true);
+}
+
+// Stage 2: stutter fill — fills along infinity path but stutters and rewinds
+void bootStutterFill(uint8_t start, uint8_t count, uint8_t r, uint8_t g, uint8_t b)
+{
+  int8_t i = 0;
+  while (i < (int8_t)count) {
+    uint8_t ledIndex = pgm_read_byte(&INFINITI_LEDS[start + i]);
+    ledStrip.setPixelColor(ledIndex, r, g, b);
+    ledStrip.show();
+    delay(45);
+
+    // ~20% chance of stutter: freeze then optionally rewind
+    if ((nextRandomByte() & 0x07) < 2) {
+      // freeze
+      delay(nextRandomByte() & 0x7F); // 0-127ms stall
+      // ~50% chance to rewind one step
+      if ((nextRandomByte() & 0x01) && i > 0) {
+        ledStrip.setPixelColor(pgm_read_byte(&INFINITI_LEDS[start + i]), 0, 0, 0);
+        ledStrip.show();
+        delay(40);
+        --i;
+        // flicker the rewound LED
+        ledStrip.setPixelColor(pgm_read_byte(&INFINITI_LEDS[start + i]), r, g, b);
+        ledStrip.show();
+        delay(30);
+        ledStrip.setPixelColor(pgm_read_byte(&INFINITI_LEDS[start + i]), 0, 0, 0);
+        ledStrip.show();
+        delay(50);
+      }
+    }
+    ++i;
+  }
+}
+
+// Stage 3: flicker drain — drains but cleared LEDs randomly ghost back
+void bootFlickerDrain(uint8_t start, uint8_t count, uint8_t r, uint8_t g, uint8_t b)
+{
+  bool cleared[9];
+  for (uint8_t i = 0; i < count; ++i) cleared[i] = false;
+
+  for (int8_t i = count - 1; i >= 0; --i) {
+    ledStrip.setPixelColor(pgm_read_byte(&INFINITI_LEDS[start + i]), r, g, b);
+    cleared[i] = true;
+    ledStrip.show();
+    delay(28);
+
+    // ghost: a previously cleared LED randomly re-ignites briefly
+    if ((nextRandomByte() & 0x03) == 0) {
+      uint8_t ghost = nextRandomByte() % count;
+      if (cleared[ghost]) {
+        uint8_t gl = pgm_read_byte(&INFINITI_LEDS[start + ghost]);
+        ledStrip.setPixelColor(gl, r >> 2, g >> 2, b >> 2);
+        ledStrip.show();
+        delay(45);
+        ledStrip.setPixelColor(gl, 0, 0, 0);
+        ledStrip.show();
+      }
+    }
+  }
+}
+
+// Stage 4: lock-in with glitch echoes between pulses
+void bootLockIn()
+{
+  for (uint8_t i = 1; i <= 3; ++i) {
+    setAllLeds(6 * i, 0, 10 * i, true);
+    delay(110 / i);
+    setAllLeds(COLOR_OFF, true);
+    delay(80 / i);
+
+    // glitch echo: one rogue LED fires wrong colour then dies
+    uint8_t rogue = nextRandomByte() % NUM_LEDS;
+    uint8_t which = nextRandomByte() & 0x03;
+    if (which == 0)      ledStrip.setPixelColor(rogue, 30, 0, 0);
+    else if (which == 1) ledStrip.setPixelColor(rogue, 0, 20, 0);
+    else                 ledStrip.setPixelColor(rogue, 20, 0, 20);
+    ledStrip.show();
+    delay(55);
+    ledStrip.setPixelColor(rogue, 0, 0, 0);
+    ledStrip.show();
+    delay(30);
+  }
+
+  // system wins — hold solid blue-white
+  setAllLeds(18, 0, 30, true);
+  delay(600);
+  setAllLeds(COLOR_OFF, true);
+}
+
+void bootAnimation()
+{
+  // Stage 1: corrupt scatter — chaos on power-on
+  bootScatter(400);
+  delay(60);
+
+  // Stage 2: stutter fill — left eye cyan, right eye purple, both fighting to load
+  bootStutterFill(0,            LEDS_PER_EYE, 0,  5,  30);
+  bootStutterFill(LEDS_PER_EYE, LEDS_PER_EYE, 20, 0,  30);
+  delay(80);
+
+  // Stage 3: flicker drain — left bleeds red, right bleeds green
+  bootFlickerDrain(0,            LEDS_PER_EYE, 30, 0,  0);
+  bootFlickerDrain(LEDS_PER_EYE, LEDS_PER_EYE, 0,  30, 0);
+  delay(60);
+
+  // Stage 4: lock-in with glitch echoes — system stabilises
+  bootLockIn();
+}
+
+// ---- Morse code: v01d-c0r3 ----
+// dit = 1, dah = 0
+// Flat array: [len, s0, s1, ... s(len-1)] repeated per character
+// v=...-  0=-----  1=.----  d=-..  c=-.-.  0=-----  r=.-.  3=...--
+static const uint8_t MORSE_SEQ[] PROGMEM = {
+  4, 1,1,1,0,      // V: ...-
+  5, 0,0,0,0,0,    // 0: -----
+  5, 1,0,0,0,0,    // 1: .----
+  3, 0,1,1,        // D: -..
+  4, 0,1,0,1,      // C: -.-.
+  5, 0,0,0,0,0,    // 0: -----
+  3, 1,0,1,        // R: .-.
+  5, 1,1,1,0,0     // 3: ...--
+};
+
+static const uint8_t  MORSE_CHARS    = 8;
+static const uint16_t MORSE_DIT_MS   = 150;
+static const uint16_t MORSE_DAH_MS   = 450;
+static const uint16_t MORSE_SYM_GAP  = 150;
+static const uint16_t MORSE_CHAR_GAP = 450;
+static const uint16_t MORSE_END_GAP  = 1200;
+
+void morseFlash(uint16_t onMs)
+{
+  setAllLeds(30, 30, 30, true);
+  delay(onMs);
+  setAllLeds(COLOR_OFF, true);
+  delay(MORSE_SYM_GAP);
+}
+
+void playMorseMode()
+{
+  setAllLeds(COLOR_OFF, true);
+  delay(600);
+
+  uint8_t pos = 0;
+  for (uint8_t ch = 0; ch < MORSE_CHARS; ++ch) {
+    const uint8_t len = pgm_read_byte(&MORSE_SEQ[pos++]);
+    for (uint8_t s = 0; s < len; ++s) {
+      morseFlash(pgm_read_byte(&MORSE_SEQ[pos++]) ? MORSE_DIT_MS : MORSE_DAH_MS);
+    }
+    delay(MORSE_CHAR_GAP);
+  }
+
+  delay(MORSE_END_GAP);
+}
+
 int runAnimationMode(uint8_t mode, uint16_t step)
 {
   switch (mode) {
@@ -878,6 +1057,9 @@ int runAnimationMode(uint8_t mode, uint16_t step)
       return spinMode(step, 1, 0, 3, 0,0,3,75);
     case 10:
       return timer(step);
+    case 11:
+      playMorseMode();
+      return 0;
     default:
       return -1;
   }
@@ -948,6 +1130,7 @@ void setup()
 void loop()
 {
   ledStrip.begin();
+  bootAnimation();
   enableRtcPtc();
 
   uint16_t animationStep = 0;
