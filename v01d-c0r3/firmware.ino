@@ -849,6 +849,36 @@ uint8_t timer(uint16_t step)
 }
 
 
+// ---- York Rose ----
+// Each eye is a 9-LED ring. SPIN_LEDS_LEFT/RIGHT give physical order.
+// Petal pattern: centre bright white, 2 adjacent petals mid-white,
+// 2 outer petals dim white — remaining 4 LEDs deep red background.
+// The whole pattern rotates one position per step.
+uint8_t yorkRose(uint16_t step)
+{
+  const uint8_t rot = step % 9;
+  setAllLeds(20, 0, 0); // deep red background
+
+  // petal brightness levels: centre, inner, outer
+  const uint8_t PC = 30; // centre
+  const uint8_t PI = 18; // inner pair
+  const uint8_t PO = 8;  // outer pair
+
+  // offsets relative to rotation centre: 0=tip, +-1=inner, +-2=outer
+  const int8_t offsets[5] = { 0, 1, -1, 2, -2 };
+  const uint8_t bright[5]  = { PC, PI, PI, PO, PO };
+
+  for (uint8_t p = 0; p < 5; ++p) {
+    uint8_t posL = (rot + 9 + offsets[p]) % 9;
+    uint8_t posR = (rot + 9 + offsets[p]) % 9;
+    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_LEFT[posL]),  bright[p], bright[p], bright[p]);
+    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_RIGHT[posR]), bright[p], bright[p], bright[p]);
+  }
+
+  ledStrip.show();
+  return 120;
+}
+
 // ---- Boot animation ----
 
 // Stage 1: corrupt scatter — raw noise across all LEDs
@@ -1049,7 +1079,7 @@ int runAnimationMode(uint8_t mode, uint16_t step)
       return nuclearMode(step, 3, 0, 0, 0, 10, 20, 0, 150 );
     case 7:
       if ((state & B00000100) != 0) { return 0; };
-      return nuclearMode(4, 3, 12, 20, 255, 0, 2, 0, 250 ); // york rose
+      return yorkRose(step);
     case 8:
       if ((state & B00000001) != 0) { return 0; };
       return policeMode(step);
