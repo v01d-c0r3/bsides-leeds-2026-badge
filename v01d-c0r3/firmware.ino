@@ -849,45 +849,6 @@ uint8_t timer(uint16_t step)
 }
 
 
-// ---- Rick Roll morse: NEVER GONNA GIVE YOU UP ----
-// dit=1 dah=0, format: [len, symbols...]
-static const uint8_t RICKROLL_SEQ[] PROGMEM = {
-  2, 0,1,        // N: -.
-  1, 1,          // E: .
-  4, 1,1,1,0,    // V: ...-
-  1, 1,          // E: .
-  3, 1,0,1,      // R: .-.
-  3, 0,0,1,      // G: --.
-  3, 0,0,0,      // O: ---
-  2, 0,1,        // N: -.
-  2, 0,1,        // N: -.
-  2, 1,0,        // A: .-
-  3, 0,0,1,      // G: --.
-  2, 1,1,        // I: ..
-  4, 1,1,1,0,    // V: ...-
-  1, 1,          // E: .
-  4, 0,1,0,0,    // Y: -.--
-  3, 0,0,0,      // O: ---
-  3, 1,1,0,      // U: ..-
-  4, 1,0,0,1,    // P: .--.
-};
-static const uint8_t RICKROLL_CHARS = 18;
-
-void playRickRoll()
-{
-  setAllLeds(COLOR_OFF, true);
-  delay(600);
-  uint8_t pos = 0;
-  for (uint8_t ch = 0; ch < RICKROLL_CHARS; ++ch) {
-    const uint8_t len = pgm_read_byte(&RICKROLL_SEQ[pos++]);
-    for (uint8_t s = 0; s < len; ++s) {
-      morseFlash(pgm_read_byte(&RICKROLL_SEQ[pos++]) ? MORSE_DIT_MS : MORSE_DAH_MS);
-    }
-    delay(MORSE_CHAR_GAP);
-  }
-  delay(MORSE_END_GAP);
-}
-
 // ---- Battery indicator ----
 // Two CR2032s in series: ~6.0V fresh, ~5.0V nominal, ~4.0V low.
 // Reads VCC via internal VDDDIV10 channel, displays as a bar on both eyes.
@@ -1161,6 +1122,45 @@ void playMorseMode()
     delay(MORSE_CHAR_GAP);
   }
 
+  delay(MORSE_END_GAP);
+}
+
+// ---- Rick Roll morse: NEVER GONNA GIVE YOU UP ----
+// dit=1 dah=0, format: [len, symbols...]
+static const uint8_t RICKROLL_SEQ[] PROGMEM = {
+  2, 0,1,        // N: -.
+  1, 1,          // E: .
+  4, 1,1,1,0,    // V: ...-
+  1, 1,          // E: .
+  3, 1,0,1,      // R: .-.
+  3, 0,0,1,      // G: --.
+  3, 0,0,0,      // O: ---
+  2, 0,1,        // N: -.
+  2, 0,1,        // N: -.
+  2, 1,0,        // A: .-
+  3, 0,0,1,      // G: --.
+  2, 1,1,        // I: ..
+  4, 1,1,1,0,    // V: ...-
+  1, 1,          // E: .
+  4, 0,1,0,0,    // Y: -.--
+  3, 0,0,0,      // O: ---
+  3, 1,1,0,      // U: ..-
+  4, 1,0,0,1,    // P: .--.
+};
+static const uint8_t RICKROLL_CHARS = 18;
+
+void playRickRoll()
+{
+  setAllLeds(COLOR_OFF, true);
+  delay(600);
+  uint8_t pos = 0;
+  for (uint8_t ch = 0; ch < RICKROLL_CHARS; ++ch) {
+    const uint8_t len = pgm_read_byte(&RICKROLL_SEQ[pos++]);
+    for (uint8_t s = 0; s < len; ++s) {
+      morseFlash(pgm_read_byte(&RICKROLL_SEQ[pos++]) ? MORSE_DIT_MS : MORSE_DAH_MS);
+    }
+    delay(MORSE_CHAR_GAP);
+  }
   delay(MORSE_END_GAP);
 }
 
