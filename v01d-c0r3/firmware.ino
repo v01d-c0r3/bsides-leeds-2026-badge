@@ -860,13 +860,13 @@ uint8_t yorkRose(uint16_t step)
   setAllLeds(20, 0, 0); // deep red background
 
   // petal brightness levels: centre, inner, outer
-  const uint8_t PC = 30; // centre
-  const uint8_t PI = 18; // inner pair
-  const uint8_t PO = 8;  // outer pair
+  const uint8_t PCTR = 30;
+  const uint8_t PINR = 18;
+  const uint8_t POUTR = 8;
 
   // offsets relative to rotation centre: 0=tip, +-1=inner, +-2=outer
   const int8_t offsets[5] = { 0, 1, -1, 2, -2 };
-  const uint8_t bright[5]  = { PC, PI, PI, PO, PO };
+  const uint8_t bright[5]  = { PCTR, PINR, PINR, POUTR, POUTR };
 
   for (uint8_t p = 0; p < 5; ++p) {
     uint8_t posL = (rot + 9 + offsets[p]) % 9;
