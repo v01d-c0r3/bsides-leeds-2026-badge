@@ -25,7 +25,6 @@ static const uint8_t FIND_SEQUENCE_LENGTH = 7;
 static const uint8_t FIND_SEQUENCE_STARTING_LIVES = 10;
 static const uint16_t FIND_SEQUENCE_PREVIEW_MS = 3000;
 
-
 static const uint8_t LEFT_BLUE_MASK = 1 << 0;
 static const uint8_t LEFT_RED_MASK = 1 << 1;
 static const uint8_t LEFT_GREEN_MASK = 1 << 2;
@@ -109,7 +108,6 @@ uint8_t randomEight()
 {
   return nextRandomByte() & 0x07;
 }
-
 
 uint8_t getPressedTouchMask()
 {
@@ -226,7 +224,6 @@ void enterSleep()
   sleep_enable();
   sleep_cpu();
 
-  // Wake is handled by rebooting through the watchdog, as in the original code.
   _PROTECTED_WRITE(WDT.CTRLA, WDT_PERIOD_8CLK_gc);
   while (true) { }
 }
@@ -342,7 +339,6 @@ void showFailure()
 
 void showSuccess()
 {
-  
   EEPROM.update(0, state);
   for (uint8_t flashIndex = 0; flashIndex < 6; ++flashIndex) {
     flashNotification(COLOR_GREEN);
@@ -424,26 +420,6 @@ void flashPlayerEye(uint8_t player, RgbColor color, uint8_t flashes = 2)
   }
 }
 
-/*void showTwoPlayerResult(uint8_t leftScore, uint8_t rightScore)
-{
-  setAllLeds(COLOR_OFF);
-
-  if (leftScore > rightScore) {
-    setPlayerEye(PLAYER_LEFT, COLOR_GREEN);
-    setPlayerEye(PLAYER_RIGHT, COLOR_RED);
-  } else if (rightScore > leftScore) {
-    setPlayerEye(PLAYER_LEFT, COLOR_RED);
-    setPlayerEye(PLAYER_RIGHT, COLOR_GREEN);
-  } else {
-    setPlayerEye(PLAYER_LEFT, COLOR_GREEN);
-    setPlayerEye(PLAYER_RIGHT, COLOR_GREEN);
-  }
-
-  ledStrip.show();
-  delay(2000);
-  setAllLeds(COLOR_OFF, true);
-}
-*/
 bool playStopTheLightLevel(uint8_t iterationIntervalMs)
 {
   const uint8_t targetLed = randomEight();
@@ -494,127 +470,6 @@ bool playStopTheLight()
   return true;
 }
 
-/*void showStopTheLightTwoPlayerFrame(uint8_t targetLed, uint8_t runnerLed, bool showLeft, bool showRight)
-{
-  setAllLeds(COLOR_OFF);
-
-  if (showLeft) {
-    setPlayerEyeLed(PLAYER_LEFT, targetLed, COLOR_GREEN);
-    setPlayerEyeLed(PLAYER_LEFT, runnerLed, COLOR_RED);
-  }
-
-  if (showRight) {
-    setPlayerEyeLed(PLAYER_RIGHT, targetLed, COLOR_GREEN);
-    setPlayerEyeLed(PLAYER_RIGHT, runnerLed, COLOR_RED);
-  }
-
-  ledStrip.show();
-}
-*/
-
-/*void playStopTheLightTwoPlayerLevel(
-  uint8_t iterationIntervalMs,
-  bool leftActive,
-  bool rightActive,
-  bool &leftPassed,
-  bool &rightPassed
-)
-{
-  const uint8_t targetLed = randomLedIndex();
-  bool leftAnswered = !leftActive;
-  bool rightAnswered = !rightActive;
-
-  leftPassed = false;
-  rightPassed = false;
-
-  for (uint8_t round = 0; round < 7; ++round) {
-    for (uint8_t runnerLed = 0; runnerLed < LEDS_PER_EYE; ++runnerLed) {
-      showStopTheLightTwoPlayerFrame(
-        targetLed,
-        runnerLed,
-        leftActive && !leftAnswered,
-        rightActive && !rightAnswered
-      );
-
-      uint8_t elapsedMs = 0;
-      while (elapsedMs < iterationIntervalMs && !(leftAnswered && rightAnswered)) {
-        const uint8_t pressedMask = getPressedTouchMask();
-
-        if (leftActive && !leftAnswered && (pressedMask & (LEFT_BLUE_MASK | LEFT_RED_MASK | LEFT_GREEN_MASK))) {
-          leftAnswered = true;
-          leftPassed = runnerLed == targetLed;
-        }
-
-        if (rightActive && !rightAnswered && (pressedMask & (RIGHT_BLUE_MASK | RIGHT_RED_MASK | RIGHT_GREEN_MASK))) {
-          rightAnswered = true;
-          rightPassed = runnerLed == targetLed;
-        }
-
-        if (leftAnswered && rightAnswered) {
-          return;
-        }
-
-        delay(5);
-        elapsedMs += 5;
-      }
-
-      if (leftAnswered && rightAnswered) {
-        return;
-      }
-    }
-  }
-}
-*/
-/*bool playStopTheLightTwoPlayer()
-{
-  enableRebootOnButton();
-  bool leftActive = true;
-  bool rightActive = true;
-  uint8_t leftScore = 0;
-  uint8_t rightScore = 0;
-  uint8_t level = 0;
-
-  for (uint8_t intervalMs = 200; intervalMs > 50; intervalMs -= 20) {
-    if (!leftActive && !rightActive) {
-      break;
-    }
-
-    bool leftPassed = false;
-    bool rightPassed = false;
-    playStopTheLightTwoPlayerLevel(intervalMs, leftActive, rightActive, leftPassed, rightPassed);
-
-    if (leftActive) {
-      if (leftPassed) {
-        leftScore = level + 1;
-      } else {
-        leftActive = false;
-        flashPlayerEye(PLAYER_LEFT, COLOR_RED);
-      }
-    }
-
-    if (rightActive) {
-      if (rightPassed) {
-        rightScore = level + 1;
-      } else {
-        rightActive = false;
-        flashPlayerEye(PLAYER_RIGHT, COLOR_RED);
-      }
-    }
-
-    waitForAllTouchPadsReleased();
-
-    if (leftScore != rightScore || (!leftActive && !rightActive)) {
-      break;
-    }
-
-    ++level;
-  }
-
-  showTwoPlayerResult(leftScore, rightScore);
-  disableRebootOnButton();
-  return leftScore != rightScore;
-}
-*/
 bool isExpectedSequenceButton(uint8_t expectedColor, uint8_t pressedMask)
 {
   switch (expectedColor) {
@@ -659,21 +514,6 @@ bool sequencesMatch(const uint8_t firstSequence[], const uint8_t secondSequence[
   }
 
   return true;
-}
-
-void createDifferentRandomSequence(
-  const uint8_t existingSequence[],
-  uint8_t newSequence[],
-  uint8_t sequenceLength
-)
-{
-  createRandomSequence(newSequence, sequenceLength);
-
-  if (!sequencesMatch(existingSequence, newSequence, sequenceLength)) {
-    return;
-  }
-
-  newSequence[0] = (newSequence[0] + 1) % 3;
 }
 
 bool playFollowTheSequence()
@@ -742,206 +582,6 @@ bool pressedMaskToColorIndex(uint8_t pressedMask, uint8_t &colorIndex)
   }
 }
 
-bool pressedMaskToPlayerColorIndex(uint8_t pressedMask, uint8_t player, uint8_t &colorIndex)
-{
-  const uint8_t playerPressedMask = pressedMask & playerMask(player);
-
-  if (player == PLAYER_LEFT) {
-    switch (playerPressedMask) {
-      case LEFT_RED_MASK:
-        colorIndex = 0;
-        return true;
-      case LEFT_GREEN_MASK:
-        colorIndex = 1;
-        return true;
-      case LEFT_BLUE_MASK:
-        colorIndex = 2;
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  switch (playerPressedMask) {
-    case RIGHT_RED_MASK:
-      colorIndex = 0;
-      return true;
-    case RIGHT_GREEN_MASK:
-      colorIndex = 1;
-      return true;
-    case RIGHT_BLUE_MASK:
-      colorIndex = 2;
-      return true;
-    default:
-      return false;
-  }
-}
-
-bool waitForPlayerColorGuess(uint8_t player, uint8_t &colorIndex)
-{
-  const uint8_t activeMask = playerMask(player);
-  const uint8_t waitingPlayer = player == PLAYER_LEFT ? PLAYER_RIGHT : PLAYER_LEFT;
-
-  setPlayerEye(waitingPlayer, COLOR_ORANGE);
-  ledStrip.show();
-
-  while (getPressedTouchMask() & activeMask) {
-    delay(TOUCH_POLL_MS);
-  }
-
-  uint8_t pressedMask = getPressedTouchMask();
-  while ((pressedMask & activeMask) == 0) {
-    delay(TOUCH_POLL_MS);
-    pressedMask = getPressedTouchMask();
-  }
-
-  const bool isKnownColor = pressedMaskToPlayerColorIndex(pressedMask, player, colorIndex);
-  setPlayerEye(player, isKnownColor ? colorForIndex(colorIndex) : COLOR_OFF);
-  ledStrip.show();
-
-  while (getPressedTouchMask() & activeMask) {
-    delay(TOUCH_POLL_MS);
-  }
-
-  return isKnownColor;
-}
-
-bool playFollowTheSequenceLevelForPlayer(uint8_t player, const uint8_t sequence[], uint8_t level)
-{
-  for (uint8_t sequenceIndex = 0; sequenceIndex < level; ++sequenceIndex) {
-    showSequenceColorForPlayer(player, sequence[sequenceIndex]);
-    delay(400);
-    setPlayerEye(player, COLOR_OFF);
-    ledStrip.show();
-    delay(200);
-  }
-
-  for (uint8_t sequenceIndex = 0; sequenceIndex < level; ++sequenceIndex) {
-    uint8_t guessedColor = 0;
-    const bool hasColorGuess = waitForPlayerColorGuess(player, guessedColor);
-
-    if (!hasColorGuess || guessedColor != sequence[sequenceIndex]) {
-      return false;
-    }
-
-    setPlayerEye(player, COLOR_OFF);
-    ledStrip.show();
-    delay(250);
-  }
-
-  return true;
-}
-/*
-bool playFollowTheSequenceTwoPlayer()
-{
-  enableRebootOnButton();
-  uint8_t leftSequence[NUM_SEQUENCE_LEVELS];
-  uint8_t rightSequence[NUM_SEQUENCE_LEVELS];
-  createRandomSequence(leftSequence, NUM_SEQUENCE_LEVELS);
-  createDifferentRandomSequence(leftSequence, rightSequence, NUM_SEQUENCE_LEVELS);
-
-  bool leftActive = true;
-  bool rightActive = true;
-  uint8_t leftScore = 0;
-  uint8_t rightScore = 0;
-
-  for (uint8_t level = MEMORY_START_LEVEL; level < NUM_SEQUENCE_LEVELS; ++level) {
-    if (!leftActive && !rightActive) {
-      break;
-    }
-
-    if (leftActive) {
-      if (playFollowTheSequenceLevelForPlayer(PLAYER_LEFT, leftSequence, level)) {
-        leftScore = level;
-        flashPlayerEye(PLAYER_LEFT, COLOR_GREEN, 1);
-      } else {
-        leftActive = false;
-        flashPlayerEye(PLAYER_LEFT, COLOR_RED);
-      }
-    }
-
-    if (rightActive) {
-      if (playFollowTheSequenceLevelForPlayer(PLAYER_RIGHT, rightSequence, level)) {
-        rightScore = level;
-        flashPlayerEye(PLAYER_RIGHT, COLOR_GREEN, 1);
-      } else {
-        rightActive = false;
-        flashPlayerEye(PLAYER_RIGHT, COLOR_RED);
-      }
-    }
-
-    if (leftScore != rightScore || (!leftActive && !rightActive)) {
-      break;
-    }
-  }
-
-  showTwoPlayerResult(leftScore, rightScore);
-  disableRebootOnButton();
-  return leftScore != rightScore;
-}
-*/
-void setSequenceSlotColor(uint8_t slotIndex, uint8_t colorIndex)
-{
-  const RgbColor color = colorForIndex(colorIndex);
-  ledStrip.setPixelColor(slotIndex, color.red, color.green, color.blue);
-}
-
-void setPlayerSequenceSlotColor(uint8_t player, uint8_t slotIndex, uint8_t colorIndex)
-{
-  setPlayerEyeLed(player, slotIndex, colorForIndex(colorIndex));
-}
-
-void showFindSequenceProgress(const uint8_t sequence[], uint8_t foundLength)
-{
-  setAllLeds(COLOR_OFF);
-
-  for (uint8_t sequenceIndex = 0; sequenceIndex < foundLength; ++sequenceIndex) {
-    setSequenceSlotColor(sequenceIndex, sequence[sequenceIndex]);
-  }
-
-  ledStrip.show();
-}
-
-void showFindSequenceProgressForPlayer(uint8_t player, const uint8_t sequence[], uint8_t foundLength)
-{
-  setPlayerEye(player, COLOR_OFF);
-
-  for (uint8_t sequenceIndex = 0; sequenceIndex < foundLength; ++sequenceIndex) {
-    setPlayerSequenceSlotColor(player, sequenceIndex, sequence[sequenceIndex]);
-  }
-
-  ledStrip.show();
-}
-
-void showFindSequencePreview(const uint8_t sequence[])
-{
-  setAllLeds(COLOR_OFF);
-
-  for (uint8_t sequenceIndex = 0; sequenceIndex < FIND_SEQUENCE_LENGTH; ++sequenceIndex) {
-    setSequenceSlotColor(sequenceIndex, sequence[sequenceIndex]);
-  }
-
-  ledStrip.show();
-  delay(FIND_SEQUENCE_PREVIEW_MS);
-  showFindSequenceProgress(sequence, 0);
-}
-
-void showFindSequencePreviewForPlayer(uint8_t player, const uint8_t sequence[])
-{
-  const uint8_t waitingPlayer = player == PLAYER_LEFT ? PLAYER_RIGHT : PLAYER_LEFT;
-
-  setAllLeds(COLOR_OFF);
-  setPlayerEye(waitingPlayer, COLOR_ORANGE);
-
-  for (uint8_t sequenceIndex = 0; sequenceIndex < FIND_SEQUENCE_LENGTH; ++sequenceIndex) {
-    setPlayerSequenceSlotColor(player, sequenceIndex, sequence[sequenceIndex]);
-  }
-
-  ledStrip.show();
-  delay(FIND_SEQUENCE_PREVIEW_MS);
-  setAllLeds(COLOR_OFF, true);
-}
-
 bool waitForColorGuess(uint8_t &colorIndex)
 {
   uint8_t pressedMask = getPressedTouchMask();
@@ -966,7 +606,16 @@ bool playFindTheSequence(uint8_t startingLives = FIND_SEQUENCE_STARTING_LIVES)
 
   uint8_t livesRemaining = startingLives;
   uint8_t foundLength = 0;
-  showFindSequencePreview(sequence);
+
+  setAllLeds(COLOR_OFF);
+  for (uint8_t sequenceIndex = 0; sequenceIndex < FIND_SEQUENCE_LENGTH; ++sequenceIndex) {
+    const RgbColor color = colorForIndex(sequence[sequenceIndex]);
+    ledStrip.setPixelColor(sequenceIndex, color.red, color.green, color.blue);
+  }
+  ledStrip.show();
+  delay(FIND_SEQUENCE_PREVIEW_MS);
+
+  setAllLeds(COLOR_OFF, true);
 
   while (foundLength < FIND_SEQUENCE_LENGTH && livesRemaining > 0) {
     uint8_t guessedColor = 0;
@@ -974,7 +623,12 @@ bool playFindTheSequence(uint8_t startingLives = FIND_SEQUENCE_STARTING_LIVES)
 
     if (hasColorGuess && guessedColor == sequence[foundLength]) {
       ++foundLength;
-      showFindSequenceProgress(sequence, foundLength);
+      setAllLeds(COLOR_OFF);
+      for (uint8_t i = 0; i < foundLength; ++i) {
+        const RgbColor color = colorForIndex(sequence[i]);
+        ledStrip.setPixelColor(i, color.red, color.green, color.blue);
+      }
+      ledStrip.show();
       delay(500);
       continue;
     }
@@ -982,7 +636,7 @@ bool playFindTheSequence(uint8_t startingLives = FIND_SEQUENCE_STARTING_LIVES)
     --livesRemaining;
     foundLength = 0;
     showFailure();
-    showFindSequenceProgress(sequence, foundLength);
+    setAllLeds(COLOR_OFF, true);
   }
 
   const bool wonGame = foundLength == FIND_SEQUENCE_LENGTH;
@@ -996,71 +650,6 @@ bool playFindTheSequence(uint8_t startingLives = FIND_SEQUENCE_STARTING_LIVES)
   return wonGame;
 }
 
-uint8_t playFindTheSequenceForPlayer(
-  uint8_t player,
-  const uint8_t sequence[],
-  uint8_t scoreNeededToWin = FIND_SEQUENCE_LENGTH
-)
-{
-  if (scoreNeededToWin > FIND_SEQUENCE_LENGTH) {
-    scoreNeededToWin = FIND_SEQUENCE_LENGTH;
-  }
-
-  uint8_t foundLength = 0;
-  showFindSequenceProgressForPlayer(player, sequence, foundLength);
-
-  while (foundLength < FIND_SEQUENCE_LENGTH) {
-    uint8_t guessedColor = 0;
-    const bool hasColorGuess = waitForPlayerColorGuess(player, guessedColor);
-
-    if (!hasColorGuess || guessedColor != sequence[foundLength]) {
-      showFindSequenceProgressForPlayer(player, sequence, 0);
-      flashPlayerEye(player, COLOR_RED);
-      return foundLength;
-    }
-
-    ++foundLength;
-    showFindSequenceProgressForPlayer(player, sequence, foundLength);
-    delay(300);
-
-    if (foundLength >= scoreNeededToWin) {
-      flashPlayerEye(player, COLOR_GREEN, 2);
-      return foundLength;
-    }
-  }
-
-  return foundLength;
-}
-/*
-bool playFindTheSequenceTwoPlayer()
-{
-  enableRebootOnButton();
-  uint8_t leftSequence[FIND_SEQUENCE_LENGTH];
-  uint8_t rightSequence[FIND_SEQUENCE_LENGTH];
-  createRandomSequence(leftSequence, FIND_SEQUENCE_LENGTH);
-  createDifferentRandomSequence(leftSequence, rightSequence, FIND_SEQUENCE_LENGTH);
-
-  showFindSequencePreviewForPlayer(PLAYER_LEFT, leftSequence);
-  const uint8_t leftScore = playFindTheSequenceForPlayer(PLAYER_LEFT, leftSequence);
-  delay(300);
-
-  uint8_t rightScoreNeededToWin = leftScore + 1;
-  if (rightScoreNeededToWin > FIND_SEQUENCE_LENGTH) {
-    rightScoreNeededToWin = FIND_SEQUENCE_LENGTH;
-  }
-
-  showFindSequencePreviewForPlayer(PLAYER_RIGHT, rightSequence);
-  const uint8_t rightScore = playFindTheSequenceForPlayer(
-    PLAYER_RIGHT,
-    rightSequence,
-    rightScoreNeededToWin
-  );
-
-  showTwoPlayerResult(leftScore, rightScore);
-  disableRebootOnButton();
-  return leftScore != rightScore;
-}
-*/
 const uint8_t KNIGHT_RIDER_LEDS[] PROGMEM = {
   2, 255,
   1, 3,
@@ -1100,17 +689,16 @@ uint8_t knightRider(uint16_t step, uint8_t red, uint8_t green, uint8_t blue)
 uint8_t policeMode(uint16_t step)
 {
   uint8_t initial = step % 2;
-  setAllLeds(10,0,0);
-  for (uint8_t i = 0 + initial; i < 18; i = i + 2)
-  {
-    ledStrip.setPixelColor(i, 0,0,255);
+  setAllLeds(10, 0, 0);
+  for (uint8_t i = initial; i < 18; i += 2) {
+    ledStrip.setPixelColor(i, 0, 0, 255);
   }
   ledStrip.show();
   return 100;
 }
 
-  const uint8_t INFINITI_LEDS[] PROGMEM = {
-   7, 8, 0, 1, 2, 3, 4, 5, 6, 10, 9, 17, 16, 15, 14, 13, 12, 11,
+const uint8_t INFINITI_LEDS[] PROGMEM = {
+  7, 8, 0, 1, 2, 3, 4, 5, 6, 10, 9, 17, 16, 15, 14, 13, 12, 11,
 };
 
 uint8_t devsecopsMode(uint16_t step)
@@ -1119,43 +707,34 @@ uint8_t devsecopsMode(uint16_t step)
   uint8_t g = 0;
   uint8_t b = 0;
 
- step = step % 90;
-  
-  if (step < 18)
-  {
-    r = 30; 
-  }
-  else if (step < 36)
-  {
+  step = step % 90;
+
+  if (step < 18) {
+    r = 30;
+  } else if (step < 36) {
     g = 8;
-  }
-  else if (step < 54)
-  {
+  } else if (step < 54) {
     r = 20;
-  g = 8;
-  }
-  else if (step < 72)
-  {
+    g = 8;
+  } else if (step < 72) {
     r = 6;
     b = 30;
-  }
-    else if (step < 90)
-  {
+  } else {
     g = 5;
     b = 30;
   }
+
   uint8_t pos = step % 18;
-  ledStrip.setPixelColor(pgm_read_byte(&INFINITI_LEDS[pos]), r,g,b);
+  ledStrip.setPixelColor(pgm_read_byte(&INFINITI_LEDS[pos]), r, g, b);
   ledStrip.show();
   return 50;
 }
 
-uint8_t nuclearMode(uint16_t step, uint8_t spacing, uint8_t r, uint8_t g, uint8_t b, uint8_t r2, uint8_t g2, uint8_t b2, uint8_t ret )
+uint8_t nuclearMode(uint16_t step, uint8_t spacing, uint8_t r, uint8_t g, uint8_t b, uint8_t r2, uint8_t g2, uint8_t b2, uint8_t ret)
 {
   uint8_t initial = step % 3;
-  setAllLeds(r,g,b);
-  for (uint8_t i = 0 + initial; i < 18; i = i + spacing)
-  {
+  setAllLeds(r, g, b);
+  for (uint8_t i = initial; i < 18; i += spacing) {
     ledStrip.setPixelColor(i, r2, g2, b2);
   }
   ledStrip.show();
@@ -1163,36 +742,33 @@ uint8_t nuclearMode(uint16_t step, uint8_t spacing, uint8_t r, uint8_t g, uint8_
 }
 
 const uint8_t SPIN_LEDS_LEFT[] PROGMEM = {
-    7, 8, 0, 1, 2, 3, 4, 5, 6, 
+  7, 8, 0, 1, 2, 3, 4, 5, 6,
 };
 
 const uint8_t SPIN_LEDS_RIGHT[] PROGMEM = {
   10, 9, 17, 16, 15, 14, 13, 12, 11,
 };
 
-uint8_t spinMode(uint16_t step, uint8_t r, uint8_t g, uint8_t b, uint8_t r2, uint8_t g2, uint8_t b2, uint8_t ret, uint8_t offset = 0 )
+uint8_t spinMode(uint16_t step, uint8_t r, uint8_t g, uint8_t b, uint8_t r2, uint8_t g2, uint8_t b2, uint8_t ret, uint8_t offset = 0)
 {
   step = step % 9;
-  setAllLeds(0,0,0);
-  for (uint8_t i = 0; i < 7; i++ )
-  {
-    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_LEFT[(step + i) % 9]), r * i,g * i,b * i);
-    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_RIGHT[(step + i + offset) % 9]), r2 * i,g2 * i,b2 * i);
+  setAllLeds(0, 0, 0);
+  for (uint8_t i = 0; i < 7; i++) {
+    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_LEFT[(step + i) % 9]), r * i, g * i, b * i);
+    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_RIGHT[(step + i + offset) % 9]), r2 * i, g2 * i, b2 * i);
   }
   ledStrip.show();
   return ret;
 }
 
-uint8_t breath(uint16_t step, uint8_t r, uint8_t g, uint8_t b )
+uint8_t breath(uint16_t step, uint8_t r, uint8_t g, uint8_t b)
 {
   step = step % 60;
-  if (step > 30)
-  {
+  if (step > 30) {
     step = 60 - step;
   }
   setAllLeds(r * step, g * step, b * step, true);
-  if (step == 0 )
-  {
+  if (step == 0) {
     return 200;
   }
   return 30;
@@ -1201,81 +777,109 @@ uint8_t breath(uint16_t step, uint8_t r, uint8_t g, uint8_t b )
 uint8_t timer(uint16_t step)
 {
   const uint8_t frameMs = 100;
-
-  uint16_t multiplier = 63; // tweak for timing accuracy
-
+  uint16_t multiplier = 63;
   const uint8_t eyeLedCount = 9;
   const uint8_t totalMinutes = 9;
-
-  const uint16_t preFlashSteps = 3000 / frameMs;      // 3 seconds
-  const uint16_t halfSecondSteps = 500 / frameMs;     // 0.5 seconds
+  const uint16_t preFlashSteps = 3000 / frameMs;
+  const uint16_t halfSecondSteps = 500 / frameMs;
   const uint16_t minuteSteps = multiplier * eyeLedCount;
   const uint16_t timerSteps = minuteSteps * totalMinutes;
-  const uint16_t finishedSteps = 5000 / frameMs;      // 5 seconds
-
+  const uint16_t finishedSteps = 5000 / frameMs;
   const uint16_t totalSteps = preFlashSteps + timerSteps + finishedSteps;
   step = step % totalSteps;
 
-  // Clear both eyes.
   setAllLeds(0, 0, 0);
 
-  // First 3 seconds: flash on/off every half second.
   if (step < preFlashSteps) {
     const bool flashOn = ((step / halfSecondSteps) % 2) == 0;
-
     if (flashOn) {
       setAllLeds(10, 0, 0);
     }
-
     ledStrip.show();
     return frameMs;
   }
 
   step -= preFlashSteps;
 
-  // Timer phase.
   if (step < timerSteps) {
     const uint8_t completedMinutes = step / minuteSteps;
     const uint16_t currentMinuteStep = step % minuteSteps;
-
     uint8_t rightEyeLedsLit = (currentMinuteStep / multiplier) + 1;
-
     if (rightEyeLedsLit > eyeLedCount) {
       rightEyeLedsLit = eyeLedCount;
     }
-
-    // Left eye: one light per completed minute.
     for (uint8_t ledIndex = 0; ledIndex < completedMinutes; ++ledIndex) {
       ledStrip.setPixelColor(ledIndex, 10, 0, 0);
     }
-
-    // Right eye: progress through the current minute.
     for (uint8_t ledIndex = 0; ledIndex < rightEyeLedsLit; ++ledIndex) {
       setRightEyeLed(ledIndex, 10, 0, 0);
     }
-
     ledStrip.show();
     return frameMs;
   }
 
-  // Finished phase: both eyes green for 5 seconds.
   setAllLeds(0, 30, 0, true);
   return frameMs;
 }
 
 uint8_t orangutankSparkle(uint16_t step)
 {
-  (void)step; 
+  (void)step;
   setAllLeds(COLOR_OFF);
-  
   uint8_t leftLed = randomLedIndex();
   uint8_t rightLed = randomLedIndex() + 9;
-  
   ledStrip.setPixelColor(leftLed, 30, 12, 0);
   ledStrip.setPixelColor(rightLed, 30, 12, 0);
-  
   ledStrip.show();
   return 90;
+}
+
+void bootFillEye(uint8_t startLed, uint8_t count, uint8_t r, uint8_t g, uint8_t b, uint16_t stepMs)
+{
+  for (uint8_t i = 0; i < count; ++i) {
+    uint8_t ledIndex = pgm_read_byte(&INFINITI_LEDS[startLed + i]);
+    ledStrip.setPixelColor(ledIndex, r, g, b);
+    ledStrip.show();
+    delay(stepMs);
+  }
+}
+
+void bootDrainEye(uint8_t startLed, uint8_t count, uint8_t r, uint8_t g, uint8_t b, uint16_t stepMs)
+{
+  for (int8_t i = count - 1; i >= 0; --i) {
+    uint8_t ledIndex = pgm_read_byte(&INFINITI_LEDS[startLed + i]);
+    ledStrip.setPixelColor(ledIndex, r, g, b);
+    ledStrip.show();
+    delay(stepMs);
+  }
+}
+
+void bootLockIn(uint8_t r, uint8_t g, uint8_t b)
+{
+  for (uint8_t i = 1; i <= 3; ++i) {
+    setAllLeds(r * i, g * i, b * i, true);
+    delay(100);
+    setAllLeds(COLOR_OFF, true);
+    delay(100);
+  }
+  setAllLeds(r * 3, g * 3, b * 3, true);
+  delay(500);
+  setAllLeds(COLOR_OFF, true);
+}
+
+void bootAnimation()
+{
+  setAllLeds(10, 10, 10, true);
+  delay(150);
+  setAllLeds(COLOR_OFF, true);
+
+  bootFillEye(0, LEDS_PER_EYE, 0, 5, 30, 55);
+  bootFillEye(LEDS_PER_EYE, LEDS_PER_EYE, 20, 0, 30, 40);
+
+  bootDrainEye(0, LEDS_PER_EYE, 30, 0, 0, 28);
+  bootDrainEye(LEDS_PER_EYE, LEDS_PER_EYE, 0, 30, 0, 28);
+
+  bootLockIn(6, 0, 10);
 }
 
 int runAnimationMode(uint8_t mode, uint16_t step)
@@ -1284,7 +888,7 @@ int runAnimationMode(uint8_t mode, uint16_t step)
     case 0:
       return knightRider(step, 0, 10, 0);
     case 1:
-      return breath(step, 1, 0 , 0);
+      return breath(step, 1, 0, 0);
     case 2:
       return loopingEyes(step, 0, 0, 10);
     case 3:
@@ -1292,19 +896,15 @@ int runAnimationMode(uint8_t mode, uint16_t step)
     case 4:
       return loopingEyes(step, 10, 0, 0);
     case 5:
-      //if ((state & B00000111) != 0) { return 0; };
       return devsecopsMode(step);
     case 6:
-      //if ((state & B00000010) != 0) { return 0; };
-      return nuclearMode(step, 3, 0, 0, 0, 10, 20, 0, 150 );
+      return nuclearMode(step, 3, 0, 0, 0, 10, 20, 0, 150);
     case 7:
-      //if ((state & B00000100) != 0) { return 0; };
-      return nuclearMode(4, 3, 30, 0, 0, 0, 2, 0, 250 ); // york rose - changed to lancashire rose
+      return nuclearMode(4, 3, 30, 0, 0, 0, 2, 0, 250);
     case 8:
-      //if ((state & B00000001) != 0) { return 0; };
       return orangutankSparkle(step);
     case 9:
-      return spinMode(step, 1, 0, 3, 0,0,3,75);
+      return spinMode(step, 1, 0, 3, 0, 0, 3, 75);
     case 10:
       return timer(step);
     default:
@@ -1349,15 +949,6 @@ void handleWakeButtonPress(
       case LEFT_GREEN_MASK:
         playFollowTheSequence();
         break;
-      case RIGHT_BLUE_MASK:
-        playStopTheLightTwoPlayer();
-        break;
-      case RIGHT_RED_MASK:
-        playFindTheSequenceTwoPlayer();
-        break;
-      case RIGHT_GREEN_MASK:
-        playFollowTheSequenceTwoPlayer();
-        break;
     }
   }
 
@@ -1385,6 +976,7 @@ void setup()
 void loop()
 {
   ledStrip.begin();
+  bootAnimation();
   enableRtcPtc();
 
   uint16_t animationStep = 0;
