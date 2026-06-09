@@ -424,7 +424,7 @@ void flashPlayerEye(uint8_t player, RgbColor color, uint8_t flashes = 2)
   }
 }
 
-void showTwoPlayerResult(uint8_t leftScore, uint8_t rightScore)
+/*void showTwoPlayerResult(uint8_t leftScore, uint8_t rightScore)
 {
   setAllLeds(COLOR_OFF);
 
@@ -443,7 +443,7 @@ void showTwoPlayerResult(uint8_t leftScore, uint8_t rightScore)
   delay(2000);
   setAllLeds(COLOR_OFF, true);
 }
-
+*/
 bool playStopTheLightLevel(uint8_t iterationIntervalMs)
 {
   const uint8_t targetLed = randomEight();
@@ -494,7 +494,7 @@ bool playStopTheLight()
   return true;
 }
 
-void showStopTheLightTwoPlayerFrame(uint8_t targetLed, uint8_t runnerLed, bool showLeft, bool showRight)
+/*void showStopTheLightTwoPlayerFrame(uint8_t targetLed, uint8_t runnerLed, bool showLeft, bool showRight)
 {
   setAllLeds(COLOR_OFF);
 
@@ -510,8 +510,9 @@ void showStopTheLightTwoPlayerFrame(uint8_t targetLed, uint8_t runnerLed, bool s
 
   ledStrip.show();
 }
+*/
 
-void playStopTheLightTwoPlayerLevel(
+/*void playStopTheLightTwoPlayerLevel(
   uint8_t iterationIntervalMs,
   bool leftActive,
   bool rightActive,
@@ -563,8 +564,8 @@ void playStopTheLightTwoPlayerLevel(
     }
   }
 }
-
-bool playStopTheLightTwoPlayer()
+*/
+/*bool playStopTheLightTwoPlayer()
 {
   enableRebootOnButton();
   bool leftActive = true;
@@ -613,7 +614,7 @@ bool playStopTheLightTwoPlayer()
   disableRebootOnButton();
   return leftScore != rightScore;
 }
-
+*/
 bool isExpectedSequenceButton(uint8_t expectedColor, uint8_t pressedMask)
 {
   switch (expectedColor) {
@@ -830,7 +831,7 @@ bool playFollowTheSequenceLevelForPlayer(uint8_t player, const uint8_t sequence[
 
   return true;
 }
-
+/*
 bool playFollowTheSequenceTwoPlayer()
 {
   enableRebootOnButton();
@@ -878,7 +879,7 @@ bool playFollowTheSequenceTwoPlayer()
   disableRebootOnButton();
   return leftScore != rightScore;
 }
-
+*/
 void setSequenceSlotColor(uint8_t slotIndex, uint8_t colorIndex)
 {
   const RgbColor color = colorForIndex(colorIndex);
@@ -1030,7 +1031,7 @@ uint8_t playFindTheSequenceForPlayer(
 
   return foundLength;
 }
-
+/*
 bool playFindTheSequenceTwoPlayer()
 {
   enableRebootOnButton();
@@ -1059,7 +1060,7 @@ bool playFindTheSequenceTwoPlayer()
   disableRebootOnButton();
   return leftScore != rightScore;
 }
-
+*/
 const uint8_t KNIGHT_RIDER_LEDS[] PROGMEM = {
   2, 255,
   1, 3,
