@@ -849,6 +849,41 @@ uint8_t timer(uint16_t step)
 }
 
 
+// ---- Battery indicator ----
+// Two CR2032s in series: ~6.0V fresh, ~5.0V nominal, ~4.0V low.
+// Reads VCC via internal VDDDIV10 channel, displays as a bar on both eyes.
+// Green = good, orange = medium, red = low.
+void showBatteryLevel()
+{
+  analogReference(INTERNAL1V1);
+  delay(2); // let reference settle
+  int raw = analogRead(ADC_VDDDIV10);
+  analogReference(VDD);
+
+  // raw = (VCC/10) / 1.1V * 1024
+  // At 6.0V: raw ~= 558, at 4.0V: raw ~= 372
+  // Map 372-558 to 1-9 LEDs
+  uint8_t leds;
+  if (raw >= 558) leds = 9;
+  else if (raw <= 372) leds = 1;
+  else leds = (uint8_t)(((uint32_t)(raw - 372) * 8) / 186) + 1;
+
+  // colour: green >= 7, orange >= 4, red < 4
+  uint8_t batR, batG;
+  if (leds >= 7)      { batR = 0;  batG = 25; }
+  else if (leds >= 4) { batR = 25; batG = 10; }
+  else                { batR = 25; batG = 0;  }
+
+  setAllLeds(0, 0, 0);
+  for (uint8_t i = 0; i < leds; ++i) {
+    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_LEFT[i]),  batR, batG, 0);
+    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_RIGHT[i]), batR, batG, 0);
+  }
+  ledStrip.show();
+  delay(3000);
+  setAllLeds(0, 0, 0, true);
+}
+
 // ---- York Rose ----
 // Each eye is a 9-LED ring. SPIN_LEDS_LEFT/RIGHT give physical order.
 // Petal pattern: centre bright white, 2 adjacent petals mid-white,
@@ -1155,6 +1190,9 @@ void handleWakeButtonPress(
         break;
       case LEFT_GREEN_MASK:
         playFollowTheSequence();
+        break;
+      case RIGHT_GREEN_MASK:
+        showBatteryLevel();
         break;
 
     }
