@@ -1,0 +1,149 @@
+name: Build firmware
+
+# Builds every per-author firmware folder (any top-level directory containing a
+# firmware.ino, e.g. zephrfish/ and original-firmware/) as its own build, tagged
+# by author name. Each build reports its flash headroom for the ATtiny814 and
+# fails if it overflows the 8 KB limit. On pushes to main / version tags the
+# compiled images are published as a release, one .hex/.bin per author.
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  discover:
+    name: Discover author firmwares
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: set
+        run: |
+          items=""
+          for d in */; do
+            d="${d%/}"
+            if [ -f "$d/firmware.ino" ]; then
+              [ -n "$items" ] && items="$items,"
+              items="$items{\"author\":\"$d\",\"path\":\"$d/firmware.ino\"}"
+            fi
+          done
+          echo "matrix={\"include\":[$items]}" >> "$GITHUB_OUTPUT"
+          echo "Discovered author firmwares: [$items]"
+
+  build:
+    name: Build ${{ matrix.author }}
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.discover.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install arduino-cli
+        run: |
+          mkdir -p "$HOME/bin"
+          curl -fsSL https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz \
+            | tar xz -C "$HOME/bin" arduino-cli
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+
+      - name: Install megaTinyCore
+        run: |
+          arduino-cli config init
+          arduino-cli config add board_manager.additional_urls http://drazzy.com/package_drazzy.com_index.json
+          arduino-cli core update-index
+          # Pinned to the version the firmware was developed/verified against.
+          arduino-cli core install megaTinyCore:megaavr@2.6.11
+
+      - name: Compile and report flash headroom
+        # Plain shell (no -e/pipefail): an overflowing build returns non-zero on
+        # purpose, and we record that rather than letting it abort the step.
+        shell: bash --noprofile --norc {0}
+        env:
+          AUTHOR: ${{ matrix.author }}
+          SRC: ${{ matrix.path }}
+        run: |
+          set -u
+          FQBN="megaTinyCore:megaavr:atxy4:chip=814"
+          MAX=8192
+
+          mkdir -p "build/$AUTHOR"
+          cp "$SRC" "build/$AUTHOR/$AUTHOR.ino"
+          if arduino-cli compile --fqbn "$FQBN" --output-dir out --warnings all "build/$AUTHOR" \
+               > build.log 2>&1; then
+            rc=0
+          else
+            rc=$?
+          fi
+
+          if grep -qE 'Sketch uses [0-9]+ bytes' build.log; then
+            used=$(grep -oE 'Sketch uses [0-9]+' build.log | grep -oE '[0-9]+')
+            free=$((MAX - used)); st="fits"
+          elif grep -qE 'overflowed by [0-9]+ bytes' build.log; then
+            over=$(grep -oE 'overflowed by [0-9]+' build.log | grep -oE '[0-9]+')
+            used=$((MAX + over)); free=$((-over)); st="OVERFLOW"
+          else
+            used=0; free=0; st="build error"
+          fi
+          pct=$(awk "BEGIN{printf \"%.1f\", $used*100/$MAX}")
+
+          {
+            echo "### ${AUTHOR}"
+            echo ""
+            echo "Flash: ${used} / ${MAX} bytes used (${pct}%), ${free} bytes free - ${st}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "${AUTHOR}: ${used}/${MAX} used, ${free} free - ${st}"
+
+          if [ "$rc" -ne 0 ]; then
+            cat build.log
+            echo "::error::${AUTHOR} firmware does not compile / does not fit in ${MAX} bytes"
+            exit "$rc"
+          fi
+
+          cp "out/$AUTHOR.ino.hex" "firmware-$AUTHOR.hex"
+          cp "out/$AUTHOR.ino.bin" "firmware-$AUTHOR.bin"
+
+      - name: Upload ${{ matrix.author }} build
+        uses: actions/upload-artifact@v7
+        with:
+          name: firmware-${{ matrix.author }}
+          path: |
+            firmware-${{ matrix.author }}.hex
+            firmware-${{ matrix.author }}.bin
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+
+      - name: Collect compiled firmware
+        run: |
+          mkdir -p release
+          find artifacts -type f \( -name '*.hex' -o -name '*.bin' \) -exec cp {} release/ \;
+          ls -l release
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || 'latest' }}
+          name: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || 'Latest firmware build' }}
+          body: |
+            Compiled badge firmware for the ATtiny814, one build per author folder.
+
+            Each `firmware-<author>.hex` / `.bin` is that author's image; flash the
+            relevant `.hex` with megaTinyCore over UPDI. Per-author flash usage is
+            shown in each build's summary.
+          files: release/*
