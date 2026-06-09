@@ -879,7 +879,29 @@ uint8_t yorkRose(uint16_t step)
   return 120;
 }
 
-// ---- Boot animation ----
+// ---- Matrix cascade ----
+// A bright green comet chases around each eye ring leaving a fading trail.
+// Right eye runs half a ring behind for visual separation.
+uint8_t matrixCascade(uint16_t step)
+{
+  const uint8_t head = step % 9;
+  setAllLeds(0, 0, 0);
+
+  // tail brightness: head=full, fading back 4 positions
+  const uint8_t tail[5] = { 30, 16, 8, 3, 1 };
+
+  for (uint8_t t = 0; t < 5; ++t) {
+    uint8_t posL = (head + 9 - t) % 9;
+    uint8_t posR = (head + 9 - t + 4) % 9; // offset right eye by 4
+    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_LEFT[posL]),  0, tail[t], 0);
+    ledStrip.setPixelColor(pgm_read_byte(&SPIN_LEDS_RIGHT[posR]), 0, tail[t], 0);
+  }
+
+  ledStrip.show();
+  return 80;
+}
+
+
 
 // Stage 1: corrupt scatter — raw noise across all LEDs
 void bootScatter(uint16_t durationMs)
@@ -1090,6 +1112,8 @@ int runAnimationMode(uint8_t mode, uint16_t step)
     case 11:
       playMorseMode();
       return 0;
+    case 12:
+      return matrixCascade(step);
     default:
       return -1;
   }
