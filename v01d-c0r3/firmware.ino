@@ -1350,6 +1350,58 @@ void handleWakeButtonPress(
   totalIntervalMs = 0;
 }
 
+void bootFillEye(uint8_t startLed, uint8_t count, uint8_t r, uint8_t g, uint8_t b, uint16_t stepMs)
+{
+  for (uint8_t i = 0; i < count; ++i) {
+    uint8_t ledIndex = pgm_read_byte(&INFINITI_LEDS[startLed + i]);
+    ledStrip.setPixelColor(ledIndex, r, g, b);
+    ledStrip.show();
+    delay(stepMs);
+  }
+}
+
+void bootDrainEye(uint8_t startLed, uint8_t count, uint8_t r, uint8_t g, uint8_t b, uint16_t stepMs)
+{
+  for (int8_t i = count - 1; i >= 0; --i) {
+    uint8_t ledIndex = pgm_read_byte(&INFINITI_LEDS[startLed + i]);
+    ledStrip.setPixelColor(ledIndex, r, g, b);
+    ledStrip.show();
+    delay(stepMs);
+  }
+}
+
+void bootLockIn(uint8_t r, uint8_t g, uint8_t b)
+{
+  for (uint8_t i = 1; i <= 3; ++i) {
+    setAllLeds(r * i, g * i, b * i, true);
+    delay(100);
+    setAllLeds(COLOR_OFF, true);
+    delay(100);
+  }
+  setAllLeds(r * 3, g * 3, b * 3, true);
+  delay(500);
+  setAllLeds(COLOR_OFF, true);
+}
+
+void bootAnimation()
+{
+  setAllLeds(10, 10, 10, true);
+  delay(150);
+  setAllLeds(COLOR_OFF, true);
+  delay(80);
+
+  bootFillEye(0, LEDS_PER_EYE, 0, 5, 30, 55);
+  delay(100);
+  bootFillEye(LEDS_PER_EYE, LEDS_PER_EYE, 20, 0, 30, 40);
+  delay(120);
+
+  bootDrainEye(0, LEDS_PER_EYE, 30, 0, 0, 28);
+  bootDrainEye(LEDS_PER_EYE, LEDS_PER_EYE, 0, 30, 0, 28);
+  delay(100);
+
+  bootLockIn(6, 0, 10);
+}
+
 void setup()
 {
   pinMode(PIN_PA1, OUTPUT);
@@ -1370,6 +1422,7 @@ void setup()
 void loop()
 {
   ledStrip.begin();
+  bootAnimation();
   enableRtcPtc();
 
   uint16_t animationStep = 0;
