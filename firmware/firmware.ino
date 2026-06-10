@@ -857,17 +857,30 @@ void showBatteryLevel()
 {
   // ATtiny814 is 0/1-series: no VDDDIV10. Instead measure the internal
   // 1.1V bandgap with VCC as the ADC reference. VCC = 1126400L / raw (mV).
-  ADC0.MUXPOS = ADC_MUXPOS_INTREF_gc;
+  setAllLeds(0, 0, 0, true);
+  digitalWrite(LED_POWER_PIN, LOW);
+  delay(20); // let voltage settle without LED load
+
   VREF.CTRLA  = VREF_ADC0REFSEL_1V1_gc;
+  delay(10);
+  ADC0.CTRLC = ADC_PRESC_DIV16_gc | ADC_REFSEL_INTREF_gc;
+  ADC0.MUXPOS = ADC_MUXPOS_INTREF_gc;
   ADC0.CTRLA  = ADC_ENABLE_bm;
-  ADC0.CTRLB  = 0; // single sample
-  delay(2);
+  delay(5);
+  //dummy conversion
+  ADC0.COMMAND = ADC_STCONV_bm;
+  while (!(ADC0.INTFLAGS & ADC_RESRDY_bm));
+  ADC0.INTFLAGS = ADC_RESRDY_bm;
+  //real conversion
   ADC0.COMMAND = ADC_STCONV_bm;
   while (!(ADC0.INTFLAGS & ADC_RESRDY_bm));
   int raw = ADC0.RES;
   ADC0.INTFLAGS = ADC_RESRDY_bm;
   // restore ADC for touch library
   ADC0.CTRLA &= ~ADC_ENABLE_bm;
+  digitalWrite(LED_POWER_PIN, HIGH);
+  delay(5);
+
 
   // VCC in mV = 1126400 / raw  (1.1V * 1024 * 1000)
   // Parallel CR2032s: ~3100mV fresh, ~2000mV brownout
