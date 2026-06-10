@@ -875,9 +875,9 @@ void showBatteryLevel()
   // Map 363-563 to 1-9 LEDs
   uint16_t vcc_mv = (uint16_t)(1126400L / raw);
   uint8_t leds;
-  if (vcc_mv >= 3100) leds = 9;
+  if (vcc_mv >= 3000) leds = 9;
   else if (vcc_mv <= 2000) leds = 1;
-  else leds = (uint8_t)(((uint32_t)(vcc_mv - 2000) * 8) / 1100) + 1;
+  else leds = (uint8_t)(((uint32_t)(vcc_mv - 2000) * 8) / 1000) + 1;
 
   // green >= 2700mV (7+ LEDs), orange >= 2400mV (4+ LEDs), red below that
   uint8_t batR, batG;
@@ -893,6 +893,8 @@ void showBatteryLevel()
   ledStrip.show();
   delay(3000);
   setAllLeds(0, 0, 0, true);
+  _PROTECTED_WRITE(WDT.CTRLA, WDT_PERIOD_8CLK_gc);
+  while (true) { }
 }
 
 // ---- York Rose ----
@@ -1104,19 +1106,10 @@ static const uint16_t MORSE_END_GAP  = 1200;
 bool morseFlash(uint16_t onMs)
 {
   setAllLeds(30, 30, 30, true);
-  for (uint16_t t = 0; t < onMs; t += 10) {
-    delay(10);
-    if (digitalRead(WAKE_BUTTON_PIN) == LOW) {
-      setAllLeds(COLOR_OFF, true);
-      return true;
-    }
-  }
+  delay(onMs);
   setAllLeds(COLOR_OFF, true);
-  for (uint16_t t = 0; t < MORSE_SYM_GAP; t += 10) {
-    delay(10);
-    if (digitalRead(WAKE_BUTTON_PIN) == LOW) return true;
-  }
-  return false;
+  delay(MORSE_SYM_GAP);
+  return digitalRead(WAKE_BUTTON_PIN) == LOW;
 }
 
 void playMorseMode()
@@ -1133,45 +1126,6 @@ void playMorseMode()
     delay(MORSE_CHAR_GAP);
   }
 
-  delay(MORSE_END_GAP);
-}
-
-// ---- Rick Roll morse: NEVER GONNA GIVE YOU UP ----
-// dit=1 dah=0, format: [len, symbols...]
-static const uint8_t RICKROLL_SEQ[] PROGMEM = {
-  2, 0,1,        // N: -.
-  1, 1,          // E: .
-  4, 1,1,1,0,    // V: ...-
-  1, 1,          // E: .
-  3, 1,0,1,      // R: .-.
-  3, 0,0,1,      // G: --.
-  3, 0,0,0,      // O: ---
-  2, 0,1,        // N: -.
-  2, 0,1,        // N: -.
-  2, 1,0,        // A: .-
-  3, 0,0,1,      // G: --.
-  2, 1,1,        // I: ..
-  4, 1,1,1,0,    // V: ...-
-  1, 1,          // E: .
-  4, 0,1,0,0,    // Y: -.--
-  3, 0,0,0,      // O: ---
-  3, 1,1,0,      // U: ..-
-  4, 1,0,0,1,    // P: .--.
-};
-static const uint8_t RICKROLL_CHARS = 18;
-
-void playRickRoll()
-{
-  setAllLeds(COLOR_OFF, true);
-  delay(600);
-  uint8_t pos = 0;
-  for (uint8_t ch = 0; ch < RICKROLL_CHARS; ++ch) {
-    const uint8_t len = pgm_read_byte(&RICKROLL_SEQ[pos++]);
-    for (uint8_t s = 0; s < len; ++s) {
-      if (morseFlash(pgm_read_byte(&RICKROLL_SEQ[pos++]) ? MORSE_DIT_MS : MORSE_DAH_MS)) return;
-    }
-    delay(MORSE_CHAR_GAP);
-  }
   delay(MORSE_END_GAP);
 }
 
@@ -1253,9 +1207,6 @@ void handleWakeButtonPress(
         break;
       case RIGHT_GREEN_MASK:
         showBatteryLevel();
-        break;
-      case RIGHT_RED_MASK:
-        playRickRoll();
         break;
 
     }
