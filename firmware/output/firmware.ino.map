@@ -1,0 +1,163 @@
+
+
+Symbols from /home/wlf-solar/.cache/arduino/sketches/B7AFD4C07D375922A038B814B242E3F4/firmware.ino.elf:
+
+Name                  Value   Class        Type         Size     Line  Section
+
+__heap_end          |00000000|   W  |            NOTYPE|        |     |*ABS*
+__TEXT_REGION_ORIGIN__|00000000|   W  |            NOTYPE|        |     |*ABS*
+__tmp_reg__         |00000000|   a  |            NOTYPE|        |     |*ABS*
+__vector_default    |00000000|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:63
+__vectors           |00000000|   T  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:63
+__zero_reg__        |00000001|   a  |            NOTYPE|        |     |*ABS*
+__FUSE_REGION_LENGTH__|0000000a|   A  |            NOTYPE|        |     |*ABS*
+__CCP__             |00000034|   a  |            NOTYPE|        |     |*ABS*
+__trampolines_end   |00000034|   T  |            NOTYPE|        |     |.text
+__trampolines_start |00000034|   T  |            NOTYPE|        |     |.text
+MORSE_SEQ           |00000034|   t  |            OBJECT|0000002a|     |.text
+__SP_L__            |0000003d|   a  |            NOTYPE|        |     |*ABS*
+__SP_H__            |0000003e|   a  |            NOTYPE|        |     |*ABS*
+__SREG__            |0000003f|   a  |            NOTYPE|        |     |*ABS*
+SPIN_LEDS_RIGHT     |0000005e|   t  |            OBJECT|00000009|     |.text
+SPIN_LEDS_LEFT      |00000067|   t  |            OBJECT|00000009|     |.text
+RICKROLL_SEQ        |00000070|   t  |            OBJECT|00000041|     |.text
+__EEPROM_REGION_LENGTH__|00000080|   A  |            NOTYPE|        |     |*ABS*
+INFINITI_LEDS       |000000b1|   t  |            OBJECT|00000012|     |.text
+KNIGHT_RIDER_LEDS   |000000c3|   t  |            OBJECT|00000016|     |.text
+__ctors_start       |000000da|   T  |            NOTYPE|        |     |.text
+__ctors_end         |000000dc|   T  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:230
+__dtors_end         |000000dc|   T  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:230
+__dtors_start       |000000dc|   T  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:230
+__init              |000000dc|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:230
+_initThreeStuff()   |000000e8|   T  |              FUNC|00000018|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/main.cpp:149
+__do_copy_data      |00000100|   T  |            NOTYPE|00000016|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2409
+__do_clear_bss      |00000116|   T  |            NOTYPE|00000010|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2441
+.do_clear_bss_loop  |0000011e|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2446
+.do_clear_bss_start |00000120|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2448
+__do_global_ctors   |00000126|   T  |            NOTYPE|00000014|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2466
+__bad_interrupt     |0000013e|   T  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_1          |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_10         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_11         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_12         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_13         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_15         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_16         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_19         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_2          |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_20         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_21         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_22         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_23         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_24         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_25         |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_4          |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_5          |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_6          |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_8          |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+__vector_9          |0000013e|   W  |            NOTYPE|        |     |.text	../../../../../crt1/gcrt1.S:209
+tinyNeoPixel::setPixelColor(unsigned int, unsigned char, unsigned char, unsigned char) [clone .constprop.18]|00000140|   t  |              FUNC|0000008c|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/tinyNeoPixel_Static/tinyNeoPixel_Static.cpp:1088
+delay.part.0        |000001cc|   t  |              FUNC|0000004c|     |.text
+__DATA_REGION_LENGTH__|00000200|   A  |            NOTYPE|        |     |*ABS*
+micros              |00000218|   t  |              FUNC|000000a0|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring_micros_ISR.h:403
+tinyNeoPixel::show() [clone .constprop.20]|000002b8|   t  |              FUNC|0000010e|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/tinyNeoPixel_Static/tinyNeoPixel_Static.cpp:79
+_head20             |00000364|   t  |            NOTYPE|        |     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/tinyNeoPixel_Static/tinyNeoPixel_Static.cpp:732
+_onlydelay20        |00000382|   t  |            NOTYPE|        |     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/tinyNeoPixel_Static/tinyNeoPixel_Static.cpp:732
+_nextbyte20         |00000386|   t  |            NOTYPE|        |     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/tinyNeoPixel_Static/tinyNeoPixel_Static.cpp:732
+ptc_start_conversion|000003c6|   t  |              FUNC|000000b4|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:945
+__LOCK_REGION_LENGTH__|00000400|   A  |            NOTYPE|        |     |*ABS*
+__SIGNATURE_REGION_LENGTH__|00000400|   A  |            NOTYPE|        |     |*ABS*
+__USER_SIGNATURE_REGION_LENGTH__|00000400|   A  |            NOTYPE|        |     |*ABS*
+ptc_process_measurement|0000047a|   t  |              FUNC|000002a6|     |.text
+colorForIndex(unsigned char)|00000720|   t  |              FUNC|00000024|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:375
+setSequenceSlotColor(unsigned char, unsigned char)|00000744|   t  |              FUNC|00000014|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:564
+setAllLeds(unsigned char, unsigned char, unsigned char, bool)|00000758|   t  |              FUNC|0000004a|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:148
+setAllLeds(RgbColor, bool)|000007a2|   t  |              FUNC|0000000c|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:159
+loopingEyes(unsigned int, unsigned char, unsigned char, unsigned char) [clone .constprop.10]|000007ae|   t  |              FUNC|0000004e|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:274
+knightRider(unsigned int, unsigned char, unsigned char, unsigned char) [clone .constprop.6]|000007fc|   t  |              FUNC|0000006a|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:663
+showFindSequenceProgress(unsigned char const*, unsigned char)|00000866|   t  |              FUNC|00000044|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:570
+getPressedTouchMask()|000008aa|   t  |              FUNC|00000030|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:115
+showTouchedPads()   |000008da|   t  |              FUNC|00000086|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:304
+nextRandomByte()    |00000960|   t  |              FUNC|00000026|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:78
+createRandomSequence(unsigned char*, unsigned char)|00000986|   t  |              FUNC|0000002a|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:463
+digitalRead.constprop.36|000009b0|   t  |              FUNC|0000000c|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring_digital.c:363
+digitalWrite.constprop.13|000009bc|   t  |              FUNC|00000040|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring_digital.c:256
+pinMode             |000009fc|   t  |              FUNC|0000004a|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring_digital.c:41
+enterSleep()        |00000a46|   t  |              FUNC|00000054|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:172
+delay               |00000a9a|   t  |              FUNC|00000024|     |.text
+bootStutterFill(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char) [clone .constprop.1]|00000abe|   t  |              FUNC|000000d4|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:974
+bootFlickerDrain(unsigned char, unsigned char, unsigned char, unsigned char, unsigned char) [clone .constprop.0]|00000b92|   t  |              FUNC|0000011a|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:1007
+morseFlash(unsigned int)|00000cac|   t  |              FUNC|00000036|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:1104
+flashNotification(RgbColor)|00000ce2|   t  |              FUNC|0000006c|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:327
+showSuccess()       |00000d4e|   t  |              FUNC|00000054|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:344
+__vector_14         |00000da2|   T  |              FUNC|0000005e|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring_micros_ISR.h:835
+ovf_end             |00000dbe|   t  |            NOTYPE|        |     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring_micros_ISR.h:950
+sub4                |00000dd8|   t  |            NOTYPE|        |     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring_micros_ISR.h:950
+sub_end             |00000df2|   t  |            NOTYPE|        |     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring_micros_ISR.h:950
+__vector_17         |00000e00|   T  |              FUNC|000000aa|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:1110
+__vector_18         |00000e00|   T  |              FUNC|000000aa|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:1110
+__vector_7          |00000eaa|   T  |              FUNC|000001fc|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:244
+__vector_3          |000010a6|   T  |              FUNC|00000036|     |.text	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:234
+main                |000010dc|   T  |              FUNC|00000d5e|     |.text	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/main.cpp:49
+_GLOBAL__sub_I_touchButtons|00001e3a|   t  |              FUNC|0000004c|     |.text
+__udivmodqi4        |00001e86|   T  |            NOTYPE|00000018|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1346
+__udivmodqi4_loop   |00001e8c|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1350
+__udivmodqi4_ep     |00001e94|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1355
+__udivmodhi4        |00001e9e|   T  |            NOTYPE|00000028|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1408
+__udivmodhi4_loop   |00001ea6|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1413
+__udivmodhi4_ep     |00001eb4|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1421
+_div                |00001ec6|   T  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1440
+__divmodhi4         |00001ec6|   T  |            NOTYPE|00000026|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1440
+__divmodhi4_neg1    |00001edc|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1454
+__divmodhi4_neg2    |00001ee4|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1460
+__divmodhi4_exit    |00001eea|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1464
+__udivmodsi4        |00001eec|   T  |            NOTYPE|00000044|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1638
+__udivmodsi4_loop   |00001ef8|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1646
+__udivmodsi4_ep     |00001f12|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1660
+__divmodsi4         |00001f30|   T  |            NOTYPE|00000028|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1686
+__divmodsi4_neg2    |00001f48|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1701
+__divmodsi4_exit    |00001f56|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1709
+__negsi2            |00001f58|   T  |            NOTYPE|00000010|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:1718
+__muluhisi3         |00001f68|   T  |            NOTYPE|00000014|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:626
+__tablejump2__      |00001f7c|   T  |            NOTYPE|0000000c|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2296
+__umulhisi3         |00001f88|   T  |            NOTYPE|00000018|     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:564
+_exit               |00001fa0|   T  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2278
+exit                |00001fa0|   W  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2278
+__stop_program      |00001fa2|   t  |            NOTYPE|        |     |.text	/home/admin/Arduino/toolchain-avr-special-master/gcc-build/avr/avrxmega3/short-calls/libgcc/../../../../../gcc/libgcc/config/avr/lib1funcs.S:2280
+_etext              |00001fa4|   T  |            NOTYPE|        |     |.text
+__data_load_start   |00001ff8|   A  |            NOTYPE|        |     |*ABS*
+__data_load_end     |00001ffa|   A  |            NOTYPE|        |     |*ABS*
+__TEXT_REGION_LENGTH__|00002000|   A  |            NOTYPE|        |     |*ABS*
+__stack             |00003fff|   W  |            NOTYPE|        |     |*ABS*
+__RODATA_PM_OFFSET__|00008000|   A  |            NOTYPE|        |     |*ABS*
+COLOR_GREEN         |00009fb3|   r  |            OBJECT|00000003|     |.rodata
+ptc_ch_to_pin       |00009fb6|   r  |            OBJECT|00000006|     |.rodata	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc_io.h:396
+digital_pin_to_ptc_bm|00009fbc|   r  |            OBJECT|0000000c|     |.rodata
+TOUCH_BUTTON_PINS   |00009fc8|   r  |            OBJECT|00000006|     |.rodata
+COLOR_RED           |00009fce|   r  |            OBJECT|00000003|     |.rodata
+COLOR_OFF           |00009fd1|   r  |            OBJECT|00000003|     |.rodata
+digital_pin_to_bit_position|00009fd4|   r  |            OBJECT|0000000c|     |.rodata	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/variants/txy4/pins_arduino.h:273
+digital_pin_to_port |00009fe0|   r  |            OBJECT|0000000c|     |.rodata	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/variants/txy4/pins_arduino.h:254
+digital_pin_to_bit_mask|00009fec|   r  |            OBJECT|0000000c|     |.rodata	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/variants/txy4/pins_arduino.h:292
+__DATA_REGION_ORIGIN__|00803e00|   A  |            NOTYPE|        |     |*ABS*
+__data_start        |00803e00|   D  |            NOTYPE|        |     |.data
+randomState         |00803e00|   d  |            OBJECT|00000002|     |.data	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:66
+__bss_start         |00803e02|   B  |            NOTYPE|        |     |.bss
+__data_end          |00803e02|   D  |            NOTYPE|        |     |.data
+_edata              |00803e02|   D  |            NOTYPE|        |     |.data
+lastAcqTime         |00803e02|   b  |            OBJECT|00000002|     |.bss	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:44
+pixelBuffer         |00803e04|   b  |            OBJECT|00000036|     |.bss	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:58
+lowPowerNode        |00803e3a|   b  |            OBJECT|00000002|     |.bss	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:36
+currConvType        |00803e3c|   b  |            OBJECT|00000002|     |.bss	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:40
+ptc_lib_state       |00803e3e|   b  |            OBJECT|00000002|     |.bss	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:48
+currConvNode        |00803e40|   b  |            OBJECT|00000002|     |.bss	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:38
+firstNode           |00803e42|   b  |            OBJECT|00000002|     |.bss	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/libraries/PTC/src/ptc.c:35
+touchButtons        |00803e44|   b  |            OBJECT|0000008a|     |.bss	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:57
+shouldProcessPtc    |00803ece|   b  |            OBJECT|00000001|     |.bss	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:61
+rebootOnButtonPress |00803ecf|   b  |            OBJECT|00000001|     |.bss	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:62
+state               |00803ed0|   b  |            OBJECT|00000001|     |.bss	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:64
+timingStruct        |00803ed1|   b  |            OBJECT|0000000a|     |.bss	/home/wlf-solar/.arduino15/packages/megaTinyCore/hardware/megaavr/2.6.11/cores/megatinycore/wiring.c:67
+ledStrip            |00803edb|   b  |            OBJECT|00000015|     |.bss	/home/wlf-solar/Documents/bsides-leeds-2026-badge/firmware/firmware.ino:59
+__bss_end           |00803ef0|   B  |            NOTYPE|        |     |.bss
+_end                |00803ef0|   N  |            NOTYPE|        |     |.comment
+__eeprom_end        |00810000|   N  |            NOTYPE|        |     |.comment
