@@ -848,25 +848,26 @@ uint8_t timer(uint16_t step)
   return frameMs;
 }
 
-
-// ---- Battery indicator ----
-// Two CR2032s in series: ~6.0V fresh, ~5.0V nominal, ~4.0V low.
-// Reads VCC via internal VDDDIV10 channel, displays as a bar on both eyes.
-// Green = good, orange = medium, red = low.
 void showBatteryLevel()
 {
-  // ATtiny814 is 0/1-series: no VDDDIV10. Instead measure the internal
-  // 1.1V bandgap with VCC as the ADC reference. VCC = 1126400L / raw (mV).
+  disableRtc();
+  delay(5);
+
   setAllLeds(0, 0, 0, true);
   digitalWrite(LED_POWER_PIN, LOW);
   delay(20); // let voltage settle without LED load
 
   VREF.CTRLA  = VREF_ADC0REFSEL_1V1_gc;
   delay(10);
-  ADC0.CTRLC = ADC_PRESC_DIV16_gc | ADC_REFSEL_VDDREF_gc | ADC_SAMPCAP_bm;
-  ADC0.MUXPOS = ADC_MUXPOS_INTREF_gc;
-  ADC0.CTRLA  = ADC_ENABLE_bm;
+  ADC0.CTRLB    = ADC_SAMPNUM_ACC1_gc;  // NEW: kill accumulation left by PTC lib
+  ADC0.CTRLC    = ADC_PRESC_DIV16_gc | ADC_REFSEL_VDDREF_gc | ADC_SAMPCAP_bm;
+  ADC0.CTRLD    = 0;                    // NEW: no leftover init delay
+  ADC0.SAMPCTRL = 10;                   // NEW: longer sample time for bandgap
+  ADC0.MUXPOS   = ADC_MUXPOS_INTREF_gc;
+  ADC0.INTCTRL  = 0;                    // NEW: make sure no ADC interrupt fires
+  ADC0.CTRLA    = ADC_ENABLE_bm;
   delay(5);
+  ADC0.INTFLAGS = ADC_RESRDY_bm;        // NEW: clear stale flag before dummy
   //dummy conversion
   ADC0.COMMAND = ADC_STCONV_bm;
   while (!(ADC0.INTFLAGS & ADC_RESRDY_bm));
@@ -882,17 +883,12 @@ void showBatteryLevel()
   delay(5);
 
 
-  // VCC in mV = 1126400 / raw  (1.1V * 1024 * 1000)
-  // Parallel CR2032s: ~3100mV fresh, ~2000mV brownout
-  // At 3100mV: raw ~= 363, at 2000mV: raw ~= 563
-  // Map 363-563 to 1-9 LEDs
   uint16_t vcc_mv = (uint16_t)(1126400L / raw);
   uint8_t leds;
   if (vcc_mv >= 3000) leds = 9;
-  else if (vcc_mv <= 2000) leds = 1;
-  else leds = (uint8_t)(((uint32_t)(vcc_mv - 2000) * 8) / 1000) + 1;
+  else if (vcc_mv <= 2400) leds = 1;
+  else leds = (uint8_t)(((uint32_t)(vcc_mv - 2400) * 8) / 600) + 1;
 
-  // green >= 2700mV (7+ LEDs), orange >= 2400mV (4+ LEDs), red below that
   uint8_t batR, batG;
   if (leds >= 7)      { batR = 0;  batG = 25; }
   else if (leds >= 4) { batR = 25; batG = 10; }
